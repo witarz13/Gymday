@@ -9,6 +9,8 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.views.generic import View
+from rest_framework.permissions import IsAuthenticated
+
 import datetime
 # Create your views here.
 class UserView(generics.CreateAPIView):
@@ -77,6 +79,24 @@ class CreateUserBasicView(APIView):
                 return Response(CreateUserBasicSerializer(newUser).data,status=status.HTTP_201_CREATED)
         
         return Response({'Bad Request': 'Invalid data...'}, status=status.HTTP_400_BAD_REQUEST)
+class trace_in(APIView):
+    serializer_class=traceDataSerializer
+    def post(self, request, format=None):
+        serializer=self.serializer_class(data=request.data)
+        if serializer.is_valid():
+            uid=serializer.data.get('UID')
+            userinfo=UserBasic.objects.get(UID=uid)
+            data={
+                    'username':userinfo.username,
+                    'UID':userinfo.UID,
+                    'likes':userinfo.likes,
+                    'style':userinfo.style,
+                    'login':True,
+                
+
+                }
+            return JsonResponse(data)
+        return JsonResponse({'Bad Request': 'Invalid data...'}, status=status.HTTP_400_BAD_REQUEST)
 class Log_in(APIView):
     serializer_class=LoginSerializer
     
@@ -90,6 +110,8 @@ class Log_in(APIView):
             user = authenticate(username=UserName, password=PassWord)
             if user is not None:
                 try:
+                    
+                   
                     userinfo=UserBasic.objects.get(username=UserName)
                     data={
                             'username':userinfo.username,
@@ -97,6 +119,8 @@ class Log_in(APIView):
                             'likes':userinfo.likes,
                             'style':userinfo.style,
                             'login':True,
+                           
+
                         }
                     return JsonResponse(data)
                 except userinfo.DoesNotExist:
@@ -106,6 +130,17 @@ class Log_in(APIView):
                 return JsonResponse({'message': 'Login failed'}, status=401)
         
         return JsonResponse({'Bad Request': 'Invalid data...'}, status=status.HTTP_400_BAD_REQUEST)
+class LogoutView(APIView):
+     permission_classes = (IsAuthenticated,)
+     def post(self, request):
+          
+          try:
+               refresh_token = request.data["refresh_token"]
+               token = RefreshToken(refresh_token)
+               token.blacklist()
+               return Response(status=status.HTTP_205_RESET_CONTENT)
+          except Exception as e:
+               return Response(status=status.HTTP_400_BAD_REQUEST)
 class userActionList(View):
     def get(self, request, *args, **kwargs):
         uid_filter = self.kwargs.get('uid', None)
@@ -119,3 +154,9 @@ class userActionList(View):
                 return JsonResponse({'error': 'Invalid UID format'}, status=400)
         else:
             return JsonResponse({'error': 'UID not provided'}, status=400)
+class HomeView(APIView):
+     
+   permission_classes = (IsAuthenticated, )
+   def get(self, request):
+       content = {'message': 'Welcome to the JWT Authentication page using React Js and Django!'}
+       return Response(content)

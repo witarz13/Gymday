@@ -8,6 +8,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import TextField from '@material-ui/core/TextField';
 import FormControl from '@material-ui/core/FormControl';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import axios from "axios";
 
 
 
@@ -19,9 +20,10 @@ const loginButton = (props) => {
     const [userNameIn,setUserNameIn]=useState(false);
     const [pwdIn,setPwdIn] = useState(false);
     const [userProfile, setUserProfile] = useState({username:'Guest',likes:'0',style:'extreme',login:false});
-    
+ 
     const sendloginback =(data)=>{
         props.update(data)
+        
     }
    
 
@@ -58,28 +60,38 @@ const loginButton = (props) => {
                     password: pwd,  
                 })
             }
+           
             fetch("/data/login",requestOptions).then((response)=> response.json())
                 .then(data =>{
+                    
                     handleClose();
+                    localStorage.setItem('UID',data.UID);
+                   
+
             
                     sendloginback(data);
                 }).catch(error => {
                     document.getElementById('login_msg').innerHTML="username or password not match";
                     document.getElementById('login_msg').style.color='red';
 
-                })}
-            // fetch("/data/login",requestOptions).then((response)=>{
-            //     if(response.ok){
-            //         handleClose();
-            //         sendloginback()
-                    
-            //     }
-            //     else{
-            //         document.getElementById('login_msg').innerHTML="username or password not match";
-            //         document.getElementById('login_msg').style.color='red';
-            //         }
-            // })
+                })
+            fetch("/api/token/",requestOptions).then((response)=> response.json())
+            .then(data2 =>{
+                localStorage.clear();
+                localStorage.setItem('access_token', data2.access);
+                localStorage.setItem('refresh_token', data2.refresh);
+                localStorage.setItem('added', true);
+                axios.defaults.headers.common['Authorization'] = 
+                                                `Bearer ${data2['access']}`;
+
+                // window.location.href = '/';
+              
+            })
+           
         }
+           
+        
+    }
     
 
     return (

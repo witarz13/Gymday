@@ -40,6 +40,8 @@ const addActivite = (props) => {
     fetch("/data/creatAction",requestOptions).then((response)=>{
         if(response.ok){
             window.alert("Your workout has been created successfully. Good Job!");
+            localStorage.setItem('added',true);
+            console.log("add state: ",localStorage.getItem('added') );
             handleClose();
         }
         else{

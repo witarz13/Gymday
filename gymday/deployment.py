@@ -19,7 +19,7 @@ MIDDLEWARE = [
 ]
 
 SECRET_KEY = os.environ['MY_SECRET_KEY']
-
+    
 STORAGES = {
     "default":{
         "BACKEND": "django.core.files.storage.FileSystemStorage",

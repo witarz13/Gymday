@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import Button from '@material-ui/core/Button';
 const logOutButton = (props) => {
     const sendloginback =(data)=>{
-        props.update({username:'Guest',UIT:0,likes:0,style: "extreme",login:false})
+        localStorage.clear()
+        props.update({username:'Guest',UID:0,likes:0,style: "extreme",login:false})
     }
   return (
     <div>

@@ -17,6 +17,8 @@ class CreateUserSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=100)
     password = serializers.CharField()
+class traceDataSerializer(serializers.Serializer):
+    UID=serializers.IntegerField()
 class CreateUserBasicSerializer(serializers.ModelSerializer):
     class Meta:
         model = UserBasic
