@@ -61,20 +61,33 @@ const loginButton = (props) => {
                 })
             }
            
-            fetch("/data/login",requestOptions).then((response)=> response.json())
-                .then(data =>{
-                    
-                    handleClose();
-                    localStorage.setItem('UID',data.UID);
-                   
-
-            
-                    sendloginback(data);
-                }).catch(error => {
-                    document.getElementById('login_msg').innerHTML="username or password not match";
-                    document.getElementById('login_msg').style.color='red';
-
-                })
+            fetch("/data/login", requestOptions)
+            .then(response => {
+                if (!response.ok) {
+                    // 如果状态码不是2xx，检查具体的错误类型
+                    if (response.status === 401) {
+                        throw new Error('401 Unauthorized');
+                    } else {
+                        throw new Error('Network response was not ok');
+                    }
+                }
+                return response.json(); // 如果响应成功，则解析JSON
+            })
+            .then(data => {
+                // 处理成功响应的数据
+                localStorage.setItem('UID', data.UID);
+                sendloginback(data);
+                handleClose();
+            })
+            .catch(error => {
+                // 在catch中处理所有的错误情况
+                if (error.message === '401 Unauthorized') {
+                    document.getElementById('login_msg').innerHTML = "Login failed: username or password not match";
+                } else {
+                    document.getElementById('login_msg').innerHTML = "An error occurred: " + error.message;
+                }
+                document.getElementById('login_msg').style.color = 'red';
+            });
             fetch("/api/token/",requestOptions).then((response)=> response.json())
             .then(data2 =>{
                 localStorage.clear();

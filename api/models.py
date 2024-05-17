@@ -8,6 +8,8 @@ class UserBasic(models.Model):
     likes=models.IntegerField(max_length=10,default=0)
     style=models.CharField(max_length=20,default='extreme')
 
+    USERNAME_FILED= 'UID'
+
 
     def __str__(self):
         return  'ID: '+str(self.UID)+'  Username: '+str(self.username) + ' style: '+str(self.style)

@@ -139,7 +139,18 @@ const SignUpButton = () => {
             }
             fetch("/data/create",requestOptions).then((response)=>{
                 if(response.ok){
+                    const createbasic ={
+                        method:"POST",
+                        headers: { 'Content-Type': 'application/json',},
+                        body: JSON.stringify({
+                            username: userNameSave,
+                            style:selectedValue, 
+                        })
+                    }
+                    fetch("/data/createbasic",createbasic).then((response)=>{
+                    }).then((data)=>console.log(data));
                     window.alert("Your Your account has been created successfully. Please ensure the security of your password. be created");
+
                     handleClose();
                 }
                 else{
@@ -159,24 +170,15 @@ const SignUpButton = () => {
             document.getElementById('finalMsg').innerHTML="Please check your input."
 
         }
-        const requestOptions ={
-            method:"POST",
-            headers: { 'Content-Type': 'application/json',},
-            body: JSON.stringify({
-                username: userNameSave,
-                style:selectedValue, 
-            })
-        }
-        fetch("/data/createbasic",requestOptions).then((response)=>{
-        }).then((data)=>console.log(data));
+        
         
         
     }
         
     return (
     <div>
-        <Button variant='contained' color='primary' onClick={handleOpen}>Sign Up</Button>
-        <Dialog open={open} onClose={handleClose}>
+        <Button variant='contained' color='primary' onClick={handleOpen} id='sign_up_btn'>Sign Up</Button>
+        <Dialog open={open} onClose={handleClose} id="sign_up_pop">
             <DialogTitle align="center">User Log in</DialogTitle>
             <DialogContent>
                 <Grid container direction="column">
@@ -208,7 +210,7 @@ const SignUpButton = () => {
                     </Grid>
                     <Grid>
                     <FormControl component="fieldset" style={{ display: 'inline-block' }}>
-                    <FormControlLabel
+                    <FormControlLabel id='extremeCheck'
                         value="extreme" // 选项的值
                         control={<Radio />} // Radio 控件
                         label="Extreme" // 选项的文本标签

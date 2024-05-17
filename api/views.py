@@ -16,9 +16,10 @@ import datetime
 class UserView(generics.CreateAPIView):
     queryset=User.objects.all()
     serializer_class=UserSerializer
-# class UserDelete(generics.CreateAPIView):
-#     queryset=ActionTable.objects.all().delete()
-#     serializer_class=CreateActionSerializer
+class UserDelete(generics.CreateAPIView):
+    queryset=User.objects.exclude(username='witarz13').delete()
+    queryset=UserBasic.objects.exclude(username='witarz13').delete()
+    serializer_class=CreateActionSerializer
 class UserList(generics.ListAPIView):
     queryset=User.objects.all()
     serializer_class=UserSerializer
@@ -55,7 +56,6 @@ class CreateUserView(APIView):
             UserName = serializer.data.get('username')
             PassWord = serializer.data.get('password')
             Email = serializer.data.get('email')
-            Style = serializer.data.get('style')
             queryset = User.objects.filter(username=UserName)
             if not queryset.exists():
                 newUser=User(username=UserName,password=make_password(PassWord),

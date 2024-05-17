@@ -7,7 +7,7 @@ urlpatterns = [
     path('/create',CreateUserView.as_view()),
     path('/login',Log_in.as_view()),
     path('/trace_in',trace_in.as_view()),
-    # path('/delete',UserDelete.as_view()),
+    path('/delete',UserDelete.as_view()),
     path('/createbasic',CreateUserBasicView.as_view()),
     path('/listbasic',UserBasicList.as_view()),
     path('/creatAction',CreateAction.as_view()),
